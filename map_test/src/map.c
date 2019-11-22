@@ -48,17 +48,17 @@ bool render_tile(SDL_Renderer *renderer, map_tile_t *tile, pos_t cam_pos){
   int wl, wr, ht, hb;
   wl = tile->dims.x > cam_pos.x ? tile->dims.x : cam_pos.x;
   ht = tile->dims.y > cam_pos.y ? tile->dims.y : cam_pos.y;
-  wr = tile->dims.x + tile->dims.w > cam_pos.x + 20 ? tile->dims.w + 20 : tile->dims.x + tile->dims.h;
-  hb = tile->dims.y + tile->dims.h > cam_pos.y + 15 ? tile->dims.h + 15 : tile->dims.y + tile->dims.h;
-  dest_rect.x = CELL_SIZE * (wl- cam_pos.x);
+  wr = tile->dims.x + tile->dims.w > cam_pos.x + 20 ? cam_pos.x + 20 : tile->dims.x + tile->dims.w;
+  hb = tile->dims.y + tile->dims.h > cam_pos.y + 15 ? cam_pos.y + 15 : tile->dims.y + tile->dims.h;
+  dest_rect.x = CELL_SIZE * (wl - cam_pos.x);
   dest_rect.y = CELL_SIZE * (ht - cam_pos.y);
   dest_rect.w = CELL_SIZE * (wr - wl);
   dest_rect.h = CELL_SIZE * (hb - ht);
-  if(dest_rect.w <= 0 || dest_rect.h <= 0)
+  if(dest_rect.w <= 0 || dest_rect.h <= 0){
+    printf("not ok for rendering:\n");
+    printf("dst: x: %d, y: %d, w: %d h:%d\n",dest_rect.x, dest_rect.y, dest_rect.w, dest_rect.h);
     return false;
-#ifdef DEBUG
-  printf("dst: x: %d, y: %d, w: %d h:%d\n",dest_rect.x, dest_rect.y, dest_rect.w, dest_rect.h);
-#endif
+  }
   src_rect.x = (wl - tile->dims.x) * tile->sprite->location.w / tile->dims.w;
   src_rect.y = (ht - tile->dims.y) * tile->sprite->location.h / tile->dims.h;
   src_rect.w = (wr - wl) * tile->sprite->location.w / tile->dims.w;
