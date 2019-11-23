@@ -44,6 +44,7 @@ void destroy_map_tile(map_tile_t *map_texture){
 }
 
 bool render_tile(SDL_Renderer *renderer, map_tile_t *tile, pos_t cam_pos){
+  long start = SDL_GetPerformanceCounter();
   SDL_Rect src_rect, dest_rect;
   int wl, wr, ht, hb;
   wl = tile->dims.x > cam_pos.x ? tile->dims.x : cam_pos.x;
@@ -55,17 +56,18 @@ bool render_tile(SDL_Renderer *renderer, map_tile_t *tile, pos_t cam_pos){
   dest_rect.w = CELL_SIZE * (wr - wl);
   dest_rect.h = CELL_SIZE * (hb - ht);
   if(dest_rect.w <= 0 || dest_rect.h <= 0){
-    printf("not ok for rendering:\n");
-    printf("dst: x: %d, y: %d, w: %d h:%d\n",dest_rect.x, dest_rect.y, dest_rect.w, dest_rect.h);
+    printf("Perf_Counter : render_tile : %f ms\n",(double)((SDL_GetPerformanceCounter() - start)*1000)/SDL_GetPerformanceFrequency());
+
+    //printf("not ok for rendering:\n");
+    //printf("dst: x: %d, y: %d, w: %d h:%d\n",dest_rect.x, dest_rect.y, dest_rect.w, dest_rect.h);
     return false;
   }
   src_rect.x = (wl - tile->dims.x) * tile->sprite->location.w / tile->dims.w;
   src_rect.y = (ht - tile->dims.y) * tile->sprite->location.h / tile->dims.h;
   src_rect.w = (wr - wl) * tile->sprite->location.w / tile->dims.w;
   src_rect.h = (hb - ht) * tile->sprite->location.h / tile->dims.h;
-#ifdef DEBUG
-  printf("src: x: %d, y: %d, w: %d h:%d\n\n",src_rect.x, src_rect.y, src_rect.w, src_rect.h);
-#endif
-  return SDL_RenderCopy(renderer, tile->sprite->sheet, &src_rect, &dest_rect) == 0;
-
+  //printf("src: x: %d, y: %d, w: %d h:%d\n\n",src_rect.x, src_rect.y, src_rect.w, src_rect.h);
+  bool res = SDL_RenderCopy(renderer, tile->sprite->sheet, &src_rect, &dest_rect) == 0;
+  printf("Perf_Counter : render_tile : %f ms\n",(double)((SDL_GetPerformanceCounter() - start)*1000)/SDL_GetPerformanceFrequency());
+  return res;
 }

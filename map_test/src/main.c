@@ -1,8 +1,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#include "SDL.h"
-#include "SDL_image.h"
+#include <SDL2/SDL.h>
 #include "map.h"
 
 
@@ -27,7 +26,7 @@ int main(int argc, char* argv[]){
 
   SDL_RenderSetLogicalSize(renderer, 640,480);
 
-  SDL_Texture *background = load_texture_from_file(renderer, "assets/snowdin_map.png");
+  SDL_Texture *background = load_texture_from_file(renderer, "assets/background.png");
   SDL_QueryTexture(background,&spare1,&spare2,&w,&h);
   SDL_Rect location = {.x=0, .y=0, .w=w, .h=h};
   sprite_t *big_sprite = sprite_from_tex(background, location);
@@ -43,16 +42,16 @@ int main(int argc, char* argv[]){
         quit=true;
       }
     }
-    if(state[SDL_SCANCODE_LEFT] && cam.x >-10){
+    if(state[SDL_SCANCODE_LEFT] && cam.x >-25){
       cam.x-=1;
     }
-    if(state[SDL_SCANCODE_RIGHT] && cam.x < w/32 - 10){
+    if(state[SDL_SCANCODE_RIGHT] && cam.x < w/32 + 5){
       cam.x+=1;
     }
-    if(state[SDL_SCANCODE_UP] && cam.y > -7){
+    if(state[SDL_SCANCODE_UP] && cam.y > -15){
       cam.y-=1;
     }
-    if(state[SDL_SCANCODE_DOWN] && cam.y < h/32 - 7){
+    if(state[SDL_SCANCODE_DOWN] && cam.y < h/32 + 3){
       cam.y+=1;
     }
 
