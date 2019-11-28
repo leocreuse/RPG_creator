@@ -25,14 +25,18 @@ int main(int argc, char* argv[]){
   }
 
   SDL_RenderSetLogicalSize(renderer, 640,480);
-
-  SDL_Texture *background = load_texture_from_file(renderer, "assets/background.png");
+  SDL_Texture *background = load_sprite_from_file(renderer, "assets/background.png", NULL);
   SDL_QueryTexture(background,&spare1,&spare2,&w,&h);
-  SDL_Rect location = {.x=0, .y=0, .w=w, .h=h};
-  sprite_t *big_sprite = sprite_from_tex(background, location);
   SDL_Rect dims = {.x=0, .y=0, .w=w/32, .h=h/32};
-  map_tile_t *big_tile = map_tile_from_sprite(big_sprite, dims);
+  pos_t big_real_dims = {.x=w, .y=h};
+  map_tile_t *big_tile = map_tile_from_sprite(background, dims, big_real_dims);
   pos_t cam = {.x=0, .y=0};
+  SDL_Rect smol_dims = {.x=w/64, .y=0, .w=w/64, .h=h/64};
+  map_tile_t *smol_tile = map_tile_from_sprite(background,smol_dims, big_real_dims);
+
+  map_tile_t *tile_list[2];
+  tile_list[0] = big_tile;
+  tile_list[1] = smol_tile;
 
   bool quit = false;
   while (!quit) {
@@ -57,12 +61,12 @@ int main(int argc, char* argv[]){
 
     SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
     SDL_RenderClear(renderer);
-    render_tile(renderer, big_tile, cam);
+    //render_tile(renderer, smol_tile, cam);
+    render_map(renderer, tile_list, 2, cam);
     SDL_RenderPresent(renderer);
     SDL_Delay(34-(SDL_GetTicks()-loop_start));
   }
   destroy_map_tile(big_tile);
-  destroy_sprite(big_sprite);
   SDL_DestroyTexture(background);
   SDL_DestroyRenderer(renderer);
   SDL_DestroyWindow(window);
